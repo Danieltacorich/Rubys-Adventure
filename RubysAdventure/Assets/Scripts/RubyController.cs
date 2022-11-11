@@ -29,8 +29,14 @@ public class RubyController : MonoBehaviour
     public AudioClip throwSound;
     public AudioClip hitSound;
     AudioSource audioSource;
-    public TextMeshProUGUI repairedText;
-    private int repaired;
+
+    //Fixed Robots Score
+    public TextMeshProUGUI fixedText;
+    private int scoreFixed = 0;
+    public GameObject WinTextObject;
+    public GameObject LoseTextObject;
+    bool gameOver;
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +50,10 @@ public class RubyController : MonoBehaviour
 
         // Score n Win/Lose Text
         
-        repaired = 0;
-
-        SetCountText ();
+        fixedText.text = "Bots fixed: " + scoreFixed.ToString() + "/4";
+        WinTextObject.SetActive(false);
+        LoseTextObject.SetActive(false);
+        gameOver = false;
     }
     
 
@@ -91,14 +98,40 @@ public class RubyController : MonoBehaviour
                 }
             }
         }
+        // restart
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (gameOver == true)
+
+            {
+
+              SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // this loads the currently active scene
+
+            }
+        }
         
     }
     // Scoring n Teleport
-    void SetCountText()
+    public void FixedRobots(int amount)
     {
-        repairedText.text = "repaired: " + repaired.ToString();
+        scoreFixed += amount;
+        fixedText.text = "Fixed Robots: " + scoreFixed.ToString() + "/4";
 
+        Debug.Log("Fixed Robots: " + scoreFixed);
 
+        // Win Text Appears
+        if (scoreFixed >= 4)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+            Destroy(gameObject.GetComponent<SpriteRenderer>());
+
+            // BackgroundMusicManager is turned off
+            //backgroundManager.Stop();
+
+            // Calls sound script and plays win sound
+            //SoundManagerScript.PlaySound("FFWin");
+        }
     }
 
     void FixedUpdate()
