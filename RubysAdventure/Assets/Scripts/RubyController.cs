@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class RubyController : MonoBehaviour
 {
@@ -27,6 +29,8 @@ public class RubyController : MonoBehaviour
     public AudioClip throwSound;
     public AudioClip hitSound;
     AudioSource audioSource;
+    public TextMeshProUGUI repairedText;
+    private int repaired;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +41,12 @@ public class RubyController : MonoBehaviour
         currentHealth = maxHealth;
         // Tester currentHealth = 1;
         audioSource= GetComponent<AudioSource>();
+
+        // Score n Win/Lose Text
+        
+        repaired = 0;
+
+        SetCountText ();
     }
     
 
@@ -83,6 +93,14 @@ public class RubyController : MonoBehaviour
         }
         
     }
+    // Scoring n Teleport
+    void SetCountText()
+    {
+        repairedText.text = "repaired: " + repaired.ToString();
+
+
+    }
+
     void FixedUpdate()
     {
         Vector2 position = transform.position;
