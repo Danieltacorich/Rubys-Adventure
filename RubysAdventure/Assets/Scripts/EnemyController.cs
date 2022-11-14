@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-   public float speed;
+    public float speed;
     public bool vertical;
     public float changeTime = 3.0f;
     public ParticleSystem smokeEffect;
@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     float timer;
     int direction = 1;
     bool broken = true;
+    private RubyController rubyController;
 
     //Animation
     Animator animator;
@@ -23,6 +24,9 @@ public class EnemyController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+        
+        GameObject rubyControllerObject = GameObject.FindWithTag("Player");
+        rubyController = rubyControllerObject.GetComponent<RubyController>();
     }
 
     void Update()

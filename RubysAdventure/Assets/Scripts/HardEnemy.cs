@@ -72,7 +72,7 @@ public class HardEnemy : MonoBehaviour
 
         if (player != null)
         {
-            player.ChangeHealth(-3);
+            player.ChangeHealth(-2);
         }
     }
     public void Fix()

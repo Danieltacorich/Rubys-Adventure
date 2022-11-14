@@ -6,14 +6,22 @@ using TMPro;
 
 public class RubyController : MonoBehaviour
 {
-    //Health & Invincibility
+    //Health & Invincibility & Ammo
     public int maxHealth = 5;
     public float timeInvincible = 2.0f;
     public int health { get { return currentHealth; }}
     int currentHealth;
+
+    //Ammo
+    public GameObject projectilePrefab;
+    public int ammo {get {return currentAmmo; }}
+    int currentAmmo = 4;
+    public TextMeshProUGUI ammoText;
+    //Invincibility
     bool isInvincible;
     float invincibleTimer;
-    public GameObject projectilePrefab;
+    public ParticleSystem HealEffect;
+    public ParticleSystem DmgEffect;
 
     //Rigidbody and Movement
     public float speed = 3.0f;
@@ -43,7 +51,13 @@ public class RubyController : MonoBehaviour
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
+        HealEffect.Stop();
+        DmgEffect.Stop();
+        
+        //Ammo
+            
+        AmmoText();
+        
         currentHealth = maxHealth;
         // Tester currentHealth = 1;
         audioSource= GetComponent<AudioSource>();
@@ -54,8 +68,8 @@ public class RubyController : MonoBehaviour
         WinTextObject.SetActive(false);
         LoseTextObject.SetActive(false);
         gameOver = false;
+
     }
-    
 
     // Update is called once per frame
     void Update()
@@ -81,10 +95,16 @@ public class RubyController : MonoBehaviour
             if (invincibleTimer < 0)
                 isInvincible = false;
         }
+       
         // Projectile
         if(Input.GetKeyDown(KeyCode.C))
         {
             Launch();
+            if (currentAmmo > 0)
+            {
+                ChangeAmmo(-1);
+                AmmoText();
+            }
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
@@ -120,17 +140,20 @@ public class RubyController : MonoBehaviour
         Debug.Log("Fixed Robots: " + scoreFixed);
 
         // Win Text Appears
-        if (scoreFixed >= 4)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (scoreFixed >= 5)
+        {   
+            WinTextObject.SetActive(true);
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
-            Destroy(gameObject.GetComponent<SpriteRenderer>());
+            //Destroy(gameObject.GetComponent<SpriteRenderer>());
+            
 
             // BackgroundMusicManager is turned off
             //backgroundManager.Stop();
 
             // Calls sound script and plays win sound
             //SoundManagerScript.PlaySound("FFWin");
+            
         }
     }
 
@@ -153,16 +176,28 @@ public class RubyController : MonoBehaviour
             
             isInvincible = true;
             invincibleTimer = timeInvincible;
+            DmgEffect.Play();
 
             PlaySound(hitSound);
+        }
+        if (amount > 0)
+        {
+            HealEffect.Play();        
+        }
+        else if (amount == 0)
+        {
+            LoseTextObject.SetActive(true);
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
     }
-    // Projectile
+    // Projectile & Ammo
+   
     void Launch()
     {
+        if (currentAmmo >0)
+        {
         GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
 
         Projectile projectile = projectileObject.GetComponent<Projectile>();
@@ -171,6 +206,16 @@ public class RubyController : MonoBehaviour
         animator.SetTrigger("Launch");
 
         PlaySound(throwSound);
+        }
+    }
+     public void AmmoText()
+    {
+        ammoText.text = "Ammo: " + currentAmmo.ToString();
+    }
+    public void ChangeAmmo(int amount)
+    {
+        currentAmmo = Mathf.Abs(currentAmmo + amount);
+        Debug.Log("Ammo: " + currentAmmo);
     }
     public void PlaySound(AudioClip clip)
     {
