@@ -14,7 +14,7 @@ public class HardEnemy : MonoBehaviour
     int direction = 1;
     bool broken = true;
 
-    //Animation
+    //Animation ye
     Animator animator;
     
     // Start is called before the first frame update
