@@ -13,6 +13,7 @@ public class HardEnemy : MonoBehaviour
     float timer;
     int direction = 1;
     bool broken = true;
+    private RubyController rubyController;
 
     //Animation ye
     Animator animator;
@@ -82,5 +83,10 @@ public class HardEnemy : MonoBehaviour
         
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
+        
+        if (rubyController != null)
+        {
+            rubyController.FixedRobots(1);
+        }
     }
 }

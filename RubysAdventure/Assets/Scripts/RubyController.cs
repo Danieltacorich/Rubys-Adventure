@@ -44,7 +44,7 @@ public class RubyController : MonoBehaviour
     public GameObject WinTextObject;
     public GameObject LoseTextObject;
     bool gameOver;
-
+    public static int level;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +69,7 @@ public class RubyController : MonoBehaviour
         LoseTextObject.SetActive(false);
         gameOver = false;
 
+        level = 1;
     }
 
     // Update is called once per frame
@@ -135,15 +136,17 @@ public class RubyController : MonoBehaviour
     public void FixedRobots(int amount)
     {
         scoreFixed += amount;
-        fixedText.text = "Fixed Robots: " + scoreFixed.ToString() + "/4";
+
+        fixedText.text = "Fixed Robots: " + scoreFixed.ToString() + "/5";
 
         Debug.Log("Fixed Robots: " + scoreFixed);
 
         // Win Text Appears
         if (scoreFixed >= 5)
         {   
-            WinTextObject.SetActive(true);
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            //WinTextObject.SetActive(true);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
             //Destroy(gameObject.GetComponent<SpriteRenderer>());
             
@@ -187,6 +190,11 @@ public class RubyController : MonoBehaviour
         else if (amount == 0)
         {
             LoseTextObject.SetActive(true);
+        
+            gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+            Destroy(gameObject.GetComponent<BoxCollider2D>());
+            Destroy(gameObject.GetComponent<SpriteRenderer>());
+            gameOver = true;
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);

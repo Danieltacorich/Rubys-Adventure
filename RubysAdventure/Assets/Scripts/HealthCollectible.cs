@@ -12,8 +12,6 @@ public class HealthCollectible : MonoBehaviour
     {
         HealEffect.Stop();
     }
-
-  
     
     void OnTriggerEnter2D(Collider2D other)
     {
