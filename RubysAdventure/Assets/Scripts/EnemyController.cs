@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
     public float changeTime = 3.0f;
     public ParticleSystem smokeEffect;
 
-    Rigidbody2D rigidbody2D;
+    Rigidbody2D rigidbody2d;
     float timer;
     int direction = 1;
     bool broken = true;
@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rigidbody2d = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
         
@@ -52,7 +52,7 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        Vector2 position = rigidbody2D.position;
+        Vector2 position = rigidbody2d.position;
         
         if (vertical)
         {
@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour
             animator.SetFloat("MoveY", 0);
         }
         
-        rigidbody2D.MovePosition(position);
+        rigidbody2d.MovePosition(position);
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -82,9 +82,14 @@ public class EnemyController : MonoBehaviour
     public void Fix()
     {
         broken = false;
-        rigidbody2D.simulated = false;
+        rigidbody2d.simulated = false;
         
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
+        
+        if (rubyController != null)
+        {
+            rubyController.FixedRobots(1);
+        }
     }
 }

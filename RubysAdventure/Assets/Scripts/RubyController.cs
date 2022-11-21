@@ -8,7 +8,6 @@ public class RubyController : MonoBehaviour
 {
     //Health & Invincibility & Ammo
     public int maxHealth = 5;
-    public float timeInvincible = 2.0f;
     public int health { get { return currentHealth; }}
     int currentHealth;
 
@@ -17,7 +16,8 @@ public class RubyController : MonoBehaviour
     public int ammo {get {return currentAmmo; }}
     int currentAmmo = 4;
     public TextMeshProUGUI ammoText;
-    //Invincibility
+    //Invincibility & Effects
+    public float timeInvincible = 2.0f;
     bool isInvincible;
     float invincibleTimer;
     public ParticleSystem HealEffect;
@@ -38,24 +38,28 @@ public class RubyController : MonoBehaviour
     public AudioClip hitSound;
     AudioSource audioSource;
 
-    //Fixed Robots Score
+    //Fixed Robots Score & Level
     public TextMeshProUGUI fixedText;
     private int scoreFixed = 0;
     public GameObject WinTextObject;
     public GameObject LoseTextObject;
     bool gameOver;
-    public static int level;
+    bool winGame;
+    public static int level = 1;
 
     // Start is called before the first frame update
     void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+        
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         HealEffect.Stop();
         DmgEffect.Stop();
         
         //Ammo
-            
+        rigidbody2d = GetComponent<Rigidbody2D>();    
         AmmoText();
         
         currentHealth = maxHealth;
@@ -68,6 +72,7 @@ public class RubyController : MonoBehaviour
         WinTextObject.SetActive(false);
         LoseTextObject.SetActive(false);
         gameOver = false;
+        winGame = false;
 
         level = 1;
     }
@@ -109,7 +114,7 @@ public class RubyController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
-             RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NPC"));
+            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NPC"));
             if (hit.collider != null)
             {
                 NonPlayerCharacter character = hit.collider.GetComponent<NonPlayerCharacter>();
@@ -117,17 +122,28 @@ public class RubyController : MonoBehaviour
                 {
                     character.DisplayDialog();
                 }
+                if (scoreFixed >= 4)
+                {
+                    SceneManager.LoadScene("Level 2");
+                    level = 2;
+                }
+                else
+                {
+                    character.DisplayDialog(); 
+                }
             }
         }
         // restart
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (gameOver == true)
-
             {
-
-              SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // this loads the currently active scene
-
+              SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); 
+            }
+            if (winGame == true)
+            {
+                SceneManager.LoadScene("Level 1");
+                level = 1;
             }
         }
         
@@ -142,21 +158,26 @@ public class RubyController : MonoBehaviour
         Debug.Log("Fixed Robots: " + scoreFixed);
 
         // Win Text Appears
-        if (scoreFixed >= 5)
+        if (scoreFixed == 4 && level == 1)
         {   
             //WinTextObject.SetActive(true);
 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-
-            //Destroy(gameObject.GetComponent<SpriteRenderer>());
-            
-
+            // Destroy(gameObject.GetComponent<SpriteRenderer>());
             // BackgroundMusicManager is turned off
-            //backgroundManager.Stop();
-
+            // backgroundManager.Stop();
             // Calls sound script and plays win sound
-            //SoundManagerScript.PlaySound("FFWin");
-            
+            // SoundManagerScript.PlaySound("FFWin"); 
+        }
+        if (scoreFixed >=4 && level == 2)
+        {
+            WinTextObject.SetActive(true);
+
+            winGame = true;
+
+            transform.position = new Vector3(-5f, 0f, -100f);
+            speed = 0;
+
+            Destroy(gameObject.GetComponent<SpriteRenderer>());
         }
     }
 
@@ -187,14 +208,18 @@ public class RubyController : MonoBehaviour
         {
             HealEffect.Play();        
         }
-        else if (amount == 0)
+        
+        
+        if (health == 0)
         {
             LoseTextObject.SetActive(true);
-        
-            gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-            Destroy(gameObject.GetComponent<BoxCollider2D>());
+            
+            transform.position = new Vector3(-5f, 0f, -100f);
+            speed = 0;
             Destroy(gameObject.GetComponent<SpriteRenderer>());
+
             gameOver = true;
+           
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
@@ -216,7 +241,7 @@ public class RubyController : MonoBehaviour
         PlaySound(throwSound);
         }
     }
-     public void AmmoText()
+    public void AmmoText()
     {
         ammoText.text = "Ammo: " + currentAmmo.ToString();
     }

@@ -14,10 +14,10 @@ public class currentAmmo : MonoBehaviour
 
         if (controller != null)
         {
-            //if (controller.ammo <= controller.ChangeAmmo)
+            //if (controller.ammo <= controller.currentAmmo)
             {
-                controller.ChangeAmmo(4); // Adds 4 ammo
-                controller.AmmoText(); // Changes Ammo UI
+                controller.ChangeAmmo(4); 
+                controller.AmmoText(); 
                 Destroy(gameObject);
 
                 controller.PlaySound(collectedClip);
