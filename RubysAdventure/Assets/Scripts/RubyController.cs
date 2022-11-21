@@ -20,7 +20,7 @@ public class RubyController : MonoBehaviour
     public float timeInvincible = 2.0f;
     bool isInvincible;
     float invincibleTimer;
-    public ParticleSystem HealEffect;
+    public ParticleSystem HealEffect;  // test
     public ParticleSystem DmgEffect;
 
     //Rigidbody and Movement
@@ -36,6 +36,8 @@ public class RubyController : MonoBehaviour
     //Audio
     public AudioClip throwSound;
     public AudioClip hitSound;
+    public AudioClip winSound;
+    public AudioClip victory;
     AudioSource audioSource;
 
     //Fixed Robots Score & Level
@@ -61,7 +63,7 @@ public class RubyController : MonoBehaviour
         //Ammo
         rigidbody2d = GetComponent<Rigidbody2D>();    
         AmmoText();
-        
+
         currentHealth = maxHealth;
         // Tester currentHealth = 1;
         audioSource= GetComponent<AudioSource>();
@@ -151,34 +153,32 @@ public class RubyController : MonoBehaviour
     // Scoring n Teleport
     public void FixedRobots(int amount)
     {
+        // Win Text Appears
         scoreFixed += amount;
 
-        fixedText.text = "Fixed Robots: " + scoreFixed.ToString() + "/5";
+        fixedText.text = "Fixed Robots: " + scoreFixed.ToString() + "/4";
 
         Debug.Log("Fixed Robots: " + scoreFixed);
 
-        // Win Text Appears
         if (scoreFixed == 4 && level == 1)
         {   
-            //WinTextObject.SetActive(true);
+            //Mini sound Win Plays
+            PlaySound(winSound);
 
-            // Destroy(gameObject.GetComponent<SpriteRenderer>());
-            // BackgroundMusicManager is turned off
-            // backgroundManager.Stop();
-            // Calls sound script and plays win sound
-            // SoundManagerScript.PlaySound("FFWin"); 
         }
+
         if (scoreFixed >=4 && level == 2)
         {
             WinTextObject.SetActive(true);
 
             winGame = true;
 
-            transform.position = new Vector3(-5f, 0f, -100f);
             speed = 0;
 
             Destroy(gameObject.GetComponent<SpriteRenderer>());
+            PlaySound(victory);
         }
+
     }
 
     void FixedUpdate()
@@ -210,13 +210,14 @@ public class RubyController : MonoBehaviour
         }
         
         
-        if (health == 0)
+        if (health == 1)
         {
             LoseTextObject.SetActive(true);
             
-            transform.position = new Vector3(-5f, 0f, -100f);
+            transform.position = new Vector3(.08f, 1.03f, -100f);
             speed = 0;
             Destroy(gameObject.GetComponent<SpriteRenderer>());
+            
 
             gameOver = true;
            
