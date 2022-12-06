@@ -40,7 +40,7 @@ public class RubyController : MonoBehaviour
     public AudioClip victory;
     AudioSource audioSource;
 
-    //Fixed Robots Score & Level
+    //Fixed Robots Score & Level & Honey
     public TextMeshProUGUI fixedText;
     private int scoreFixed = 0;
     public GameObject WinTextObject;
@@ -48,6 +48,10 @@ public class RubyController : MonoBehaviour
     bool gameOver;
     bool winGame;
     public static int level = 1;
+
+    public TextMeshProUGUI Honey;
+    private int scoreHoney = 0;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -69,7 +73,8 @@ public class RubyController : MonoBehaviour
         audioSource= GetComponent<AudioSource>();
 
         // Score n Win/Lose Text
-        
+        Honey.text = "Honey Jars: " + scoreHoney.ToString() + "/3";
+
         fixedText.text = "Bots fixed: " + scoreFixed.ToString() + "/4";
         WinTextObject.SetActive(false);
         LoseTextObject.SetActive(false);
@@ -77,6 +82,7 @@ public class RubyController : MonoBehaviour
         winGame = false;
 
         level = 1;
+
     }
 
     // Update is called once per frame
@@ -120,6 +126,7 @@ public class RubyController : MonoBehaviour
             if (hit.collider != null)
             {
                 NonPlayerCharacter character = hit.collider.GetComponent<NonPlayerCharacter>();
+                
                 if (character != null)
                 {
                     character.DisplayDialog();
@@ -133,6 +140,7 @@ public class RubyController : MonoBehaviour
                 {
                     character.DisplayDialog(); 
                 }
+                
             }
         }
         // restart
@@ -150,6 +158,22 @@ public class RubyController : MonoBehaviour
         }
         
     }
+    public void HoneyCounter(int amount)          //Honey Quest 
+    {   
+        scoreHoney += amount;
+        Honey.text = "Honey Jars: " + scoreHoney.ToString() + "/3";
+        Debug.Log("Honey Jars: " + scoreHoney);
+        
+        if (scoreHoney == 3)
+        {
+            WinTextObject.SetActive(true);
+
+            winGame = true;
+
+            speed = 0;
+        }
+    }
+
     // Scoring n Teleport
     public void FixedRobots(int amount)
     {
