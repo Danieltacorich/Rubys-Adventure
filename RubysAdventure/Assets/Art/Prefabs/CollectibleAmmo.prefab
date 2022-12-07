@@ -124,3 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8128c4c0b5b2045bbf44c3984f5d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
+=======
+  collectedClip: {fileID: 8300000, guid: 4e688d45f5078594db25b22e7bd8de13, type: 3}
+>>>>>>> Stashed changes

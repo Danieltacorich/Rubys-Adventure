@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+<<<<<<< Updated upstream
+=======
+  - Honey
+  - Speed
+  - SpeedBoost
+>>>>>>> Stashed changes
   layers:
   - Default
   - TransparentFX

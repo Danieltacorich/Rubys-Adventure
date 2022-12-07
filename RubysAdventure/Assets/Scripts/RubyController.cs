@@ -22,13 +22,19 @@ public class RubyController : MonoBehaviour
     float invincibleTimer;
     public ParticleSystem HealEffect;
     public ParticleSystem DmgEffect;
+    public ParticleSystem AmmoEffect;
+    public ParticleSystem PotionEffect;
 
     //Rigidbody and Movement
     public float speed = 3.0f;
     Rigidbody2D rigidbody2d;
     float horizontal;
     float vertical;
-    
+
+    //Speed Boost
+    private float boostTimer;
+    private bool boosting;
+
     //Animation
     Animator animator;
     Vector2 lookDirection = new Vector2(1,0);
@@ -53,6 +59,8 @@ public class RubyController : MonoBehaviour
         animator = GetComponent<Animator>();
         HealEffect.Stop();
         DmgEffect.Stop();
+        PotionEffect.Stop();
+        AmmoEffect.Stop();
         
         //Ammo
             
@@ -68,6 +76,10 @@ public class RubyController : MonoBehaviour
         WinTextObject.SetActive(false);
         LoseTextObject.SetActive(false);
         gameOver = false;
+
+        //Speed Boost
+        boostTimer = 0;
+        boosting = false;
 
         level = 1;
     }
@@ -88,6 +100,17 @@ public class RubyController : MonoBehaviour
         animator.SetFloat("Look X", lookDirection.x);
         animator.SetFloat("Look Y", lookDirection.y);
         animator.SetFloat("Speed", move.magnitude);
+
+         if(boosting)
+        {
+            boostTimer +=Time.deltaTime;
+            if(boostTimer >=10)
+            {
+                speed = 4;
+                boostTimer = 0;
+                boosting = false;
+            }
+        }
 
         //Invicibility
          if (isInvincible)
@@ -132,6 +155,21 @@ public class RubyController : MonoBehaviour
         }
         
     }
+<<<<<<< Updated upstream
+=======
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "SpeedBoost")
+        {
+            boosting = true;
+            speed = 10;
+            Destroy(other.gameObject);
+            PotionEffect.Play();
+        }
+    }
+
+>>>>>>> Stashed changes
     // Scoring n Teleport
     public void FixedRobots(int amount)
     {

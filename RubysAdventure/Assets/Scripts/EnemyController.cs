@@ -15,8 +15,9 @@ public class EnemyController : MonoBehaviour
     bool broken = true;
     private RubyController rubyController;
 
-    //Animation
+    //Animation & Sound
     Animator animator;
+    public AudioClip fixedClip;
     
     // Start is called before the first frame update
     void Start()
@@ -81,10 +82,20 @@ public class EnemyController : MonoBehaviour
     }
     public void Fix()
     {
+        RubyController player = gameObject.GetComponent<RubyController >();
         broken = false;
         rigidbody2D.simulated = false;
         
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
+<<<<<<< Updated upstream
+=======
+        player.PlaySound(fixedClip);
+        
+        if (rubyController != null)
+        {
+            rubyController.FixedRobots(1);
+        }
+>>>>>>> Stashed changes
     }
 }
